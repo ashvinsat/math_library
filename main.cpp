@@ -65,8 +65,15 @@ public:
 		}
 		return res;
 	}
-    
-    // need to add addition, multiplication (addition*-1)
+    	double mDot(const Matrix& m) const { // dot product of two 1-row, equal-cols matrices
+	        if (rows != 1 || m.rows != 1 || cols != m.cols) throw std::invalid_argument("Dot requires two equal sized row vectors");
+	        double res = 0.0;
+	        for (int i=0; i < cols; i++) {
+	            res += (*this)(0,i) * m(0,i);
+        }
+        return res;
+    }
+    // need to add addition, subtraction (addition*-1)
     
 	// Print Matrix
 	void print() const {
