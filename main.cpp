@@ -41,6 +41,14 @@ public:
 		if (i<0 || i >= rows || j < 0 || j >= cols) throw std::out_of_range("Index"); // give error if user gives a non-existent entry
 		return data[i][j];
 	}
+	
+	std::vector<double>& operator[](int i) { // retrieval with indices
+	    return data[i];
+	}
+    
+    	const std::vector<double>& operator[](int i) const {
+	    return data[i];
+	}
 
 	int nRows() const {
 		return rows;
