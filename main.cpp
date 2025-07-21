@@ -50,7 +50,8 @@ public:
 	}
 
 	// Matrix operations
-	Matrix operator*(const Matrix& m) const { // multiplication: must have an p x q * q x r, returns p x r. basic multiplication algorithm. O(n^3)
+	// basic multiplication algorithm. O(n^3)
+	Matrix multiply(const Matrix& m) const { // multiplication: must have an p x q * q x r, returns p x r. 
 		if (cols != m.rows) throw std::invalid_argument("Inner dimension mismatch");
 		Matrix res(rows, m.cols);
 		for (int i=0; i<rows; i++) {
@@ -81,11 +82,18 @@ public:
 
 
 int main() {
-	Matrix mat = {
+	Matrix mat1 = {
 		{1.0, 2.0, 3.0},
 		{4.0, 5.0, 6.0}
 	};
-
-	mat.print();
+	
+	Matrix mat2 = {
+	    {1.0, 2.0},
+	    {3.0, 4.0},
+	    {5.0, 6.0}
+	};
+    
+    Matrix C = mat1.multiply(mat2);
+	C.print();
 	return 0;
 }
