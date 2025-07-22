@@ -42,11 +42,11 @@ public:
 		return data[i][j];
 	}
 	
-	std::vector<double>& operator[](int i) { // retrieval with indices
+	std::vector<double>& operator[](int i) {
 	    return data[i];
 	}
     
-    	const std::vector<double>& operator[](int i) const {
+    const std::vector<double>& operator[](int i) const {
 	    return data[i];
 	}
 
@@ -73,15 +73,18 @@ public:
 		}
 		return res;
 	}
-    	double mDot(const Matrix& m) const { // dot product of two 1-row, equal-cols matrices
-	        if (rows != 1 || m.rows != 1 || cols != m.cols) throw std::invalid_argument("Dot requires two equal sized row vectors");
-	        double res = 0.0;
-	        for (int i=0; i < cols; i++) {
-	            res += (*this)(0,i) * m(0,i);
+    
+    double mDot(const Matrix& m) const { // dot product of two 1-row, equal-cols matrices
+        if (rows != 1 || m.rows != 1 || cols != m.cols) throw std::invalid_argument("Dot requires two equal sized row vectors");
+        double res = 0.0;
+        for (int i=0; i < cols; i++) {
+            res += (*this)(0,i) * m(0,i);
+            
         }
         return res;
     }
-    // need to add addition, subtraction (addition*-1)
+    
+    // need to add addition, multiplication (addition*-1)
     
 	// Print Matrix
 	void print() const {
@@ -107,8 +110,17 @@ int main() {
 	    {3.0, 4.0},
 	    {5.0, 6.0}
 	};
-    
+    Matrix mat3 = {{1.0,2.0,3.0}};
+    Matrix mat4 = {{4.0,5.0,6.0}};
     Matrix C = mat1.multiply(mat2);
+	double dp = mat4.mDot(mat3);
 	C.print();
+    for (double val : C[0]) {
+	std::cout << val << ' ';
+    }
+    std::cout << '\n';
+    std::cout << C[0][1] << '\n';
+	std::cout << dp;
+	
 	return 0;
 }
