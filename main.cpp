@@ -11,13 +11,15 @@ public:
 	Matrix(int r, int c):
 		rows(r), cols(c), data(r, std::vector<double>(c)) {} // init
 
-	// easy init of Matrix
+	
 	/*
+	easy init of Matrix
 	Matrix mat = {
-	    {1.0, 2.0, 3.0},
-	    {4.0, 5.0, 6.0}
+		{1.0, 2.0, 3.0},
+		{4.0, 5.0, 6.0}
 	};
 	*/
+	
 	Matrix(std::initializer_list<std::initializer_list<double>> init):
 		rows(init.size()),
 		cols(init.begin()->size()),
@@ -41,13 +43,13 @@ public:
 		if (i<0 || i >= rows || j < 0 || j >= cols) throw std::out_of_range("Index"); // give error if user gives a non-existent entry
 		return data[i][j];
 	}
-	
+		
 	std::vector<double>& operator[](int i) {
-	    return data[i];
+		return data[i];
 	}
-    
-    const std::vector<double>& operator[](int i) const {
-	    return data[i];
+	
+	const std::vector<double>& operator[](int i) const {
+		return data[i];
 	}
 
 	int nRows() const {
@@ -73,19 +75,24 @@ public:
 		}
 		return res;
 	}
-    
-    double mDot(const Matrix& m) const { // dot product of two 1-row, equal-cols matrices
-        if (rows != 1 || m.rows != 1 || cols != m.cols) throw std::invalid_argument("Dot requires two equal sized row vectors");
-        double res = 0.0;
-        for (int i=0; i < cols; i++) {
-            res += (*this)(0,i) * m(0,i);
-            
-        }
-        return res;
-    }
-    
-    // need to add addition, multiplication (addition*-1)
-    
+
+	Matrix add(const Matrix& m, double a) const {
+
+	}
+
+
+	double mDot(const Matrix& m) const { // dot product of two 1-row, equal-cols matrices
+	   if (rows != 1 || m.rows != 1 || cols != m.cols) throw std::invalid_argument("Dot requires two equal sized row vectors");
+	   double res = 0.0;
+	   for (int i=0; i < cols; i++) {
+	  res += (*this)(0,i) * m(0,i);
+	
+	   }
+	   return res;
+	}
+	
+	// need to add addition, multiplication (addition*-1)
+	
 	// Print Matrix
 	void print() const {
 		for (int i=0; i < rows; ++i) {
@@ -97,6 +104,22 @@ public:
 	}
 };
 
+Matrix operator*(const Matrix& A, const Matrix& B) {
+		return A.multiply(B);
+	}
+
+Matrix operator*(const Matrix& A, double scalar) { // this is something that can be vectorized
+	int rows {A.nRows()};
+	int cols {A.nCols()};
+	Matrix result{rows, cols};
+
+	for (int i = 0; i < rows; ++i) {
+		for (int j = 0; j < cols; ++j) {
+			result(i, j) = A(i, j) * scalar;
+		}
+	}
+}
+
 
 
 int main() {
@@ -104,23 +127,23 @@ int main() {
 		{1.0, 2.0, 3.0},
 		{4.0, 5.0, 6.0}
 	};
-	
+		
 	Matrix mat2 = {
-	    {1.0, 2.0},
-	    {3.0, 4.0},
-	    {5.0, 6.0}
+		{1.0, 2.0},
+		{3.0, 4.0},
+		{5.0, 6.0}
 	};
-    Matrix mat3 = {{1.0,2.0,3.0}};
-    Matrix mat4 = {{4.0,5.0,6.0}};
-    Matrix C = mat1.multiply(mat2);
+	Matrix mat3 = {{1.0,2.0,3.0}};
+	Matrix mat4 = {{4.0,5.0,6.0}};
+	Matrix C = mat1.multiply(mat2);
 	double dp = mat4.mDot(mat3);
 	C.print();
-    for (double val : C[0]) {
+	for (double val : C[0]) {
 	std::cout << val << ' ';
-    }
-    std::cout << '\n';
-    std::cout << C[0][1] << '\n';
+	}
+	std::cout << '\n';
+	std::cout << C[0][1] << '\n';
 	std::cout << dp;
-	
+		
 	return 0;
 }
