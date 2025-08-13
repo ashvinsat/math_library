@@ -2,6 +2,13 @@
 #include <vector>
 #include <stdexcept>
 
+
+// class FastMatrix {
+// 	pass;
+// }
+
+
+
 class Matrix {
 private:
 	std::vector<std::vector<double>> data;
@@ -10,7 +17,8 @@ private:
 public:
 	Matrix(int r, int c):
 		rows(r), cols(c), data(r, std::vector<double>(c)) {} // init
-
+	Matrix(int r, int c, double val):
+		rows(r), cols(c), data(r, std::vector<double>(c, val)) {} // init
 	
 	/*
 	easy init of Matrix
@@ -22,17 +30,42 @@ public:
 	
 	Matrix(std::initializer_list<std::initializer_list<double>> init):
 		rows(init.size()),
-		cols(init.begin()->size()),
+		cols(init.begin()->size()), // begin points to start of vector
 		data()
 	{
-		data.reserve(rows);
-		for (auto& row : init) {
+		data.reserve(rows); // allocate memory for (rows) number of vectors, prevents reallocation when you add rows and doesn't create new ones
+		for (auto& row : init) { // & eliminates the need to copy each row, it's just a reference 
 			if (static_cast<int>(row.size()) != cols)
 				throw std::invalid_argument("Row length input inconsistent");
 
-			data.emplace_back(row);
+			data.emplace_back(row); // inplace
 		}
 	}
+
+	// make specials
+	static Matrix zeros(int r, int c) {
+		return Matrix(r, c, 0.0);
+	}
+
+	static Matrix ones(int r, int c) {
+		return Matrix(r, c, 1.0);
+	}
+
+	static Matrix filled(int r, int c, double val) {
+		return Matrix(r, c, val);
+	}
+
+	static Matrix identity(int n) {
+		Matrix m = zeros(n,n);
+		for (int i = 0; i < n; ++i) {
+			m(i, i) = 1.0;
+		}
+		return m;
+	}
+
+
+
+	// retrieve data
 
 	double& operator()(int i, int j) {
 		if (i<0 || i >= rows || j < 0 || j >= cols) throw std::out_of_range("Index"); // give error if user gives a non-existent entry
@@ -76,7 +109,16 @@ public:
 		return res;
 	}
 
-	Matrix add(const Matrix& m, double a) const {
+	Matrix add(const Matrix& m) const {
+		if ((cols != m.cols) || (rows != m.rows)) throw std::invalid_argument("Inner dimension mismatch");
+		Matrix res {rows, cols};
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				res[i][j] = data[i][j] + m[i][j]; // if i were to use this, itd be (*this)[i][j], the * dereferences the pointer
+			}
+
+		}
+		return res;
 
 	}
 
@@ -104,21 +146,21 @@ public:
 	}
 };
 
-Matrix operator*(const Matrix& A, const Matrix& B) {
+	Matrix operator*(const Matrix& A, const Matrix& B) {
 		return A.multiply(B);
 	}
 
-Matrix operator*(const Matrix& A, double scalar) { // this is something that can be vectorized
-	int rows {A.nRows()};
-	int cols {A.nCols()};
-	Matrix result{rows, cols};
+	Matrix operator*(const Matrix& A, double scalar) { // this is something that can be vectorized
+		int rows {A.nRows()};
+		int cols {A.nCols()};
+		Matrix result{rows, cols};
 
-	for (int i = 0; i < rows; ++i) {
-		for (int j = 0; j < cols; ++j) {
-			result(i, j) = A(i, j) * scalar;
+		for (int i = 0; i < rows; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				result(i, j) = A(i, j) * scalar;
+			}
 		}
 	}
-}
 
 
 
