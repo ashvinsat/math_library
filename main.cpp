@@ -11,14 +11,13 @@
 
 class Matrix {
 private:
-	std::vector<std::vector<double>> data;
-	int rows;
-	int cols;
+	std::vector<double> data;
+	int rows, cols;
 public:
 	Matrix(int r, int c):
-		rows(r), cols(c), data(r, std::vector<double>(c)) {} // init
+		rows(r), cols(c), data(r*c) {} // init
 	Matrix(int r, int c, double val):
-		rows(r), cols(c), data(r, std::vector<double>(c, val)) {} // init
+		rows(r), cols(c), data(r*c, val) {} // init
 	
 	/*
 	easy init of Matrix
@@ -69,14 +68,23 @@ public:
 
 	double& operator()(int i, int j) {
 		if (i<0 || i >= rows || j < 0 || j >= cols) throw std::out_of_range("Index"); // give error if user gives a non-existent entry
-		return data[i][j];
+		return data[i*cols+j];
 	}
 
 	const double& operator()(int i, int j) const { // so read-only matrices can be read
 		if (i<0 || i >= rows || j < 0 || j >= cols) throw std::out_of_range("Index"); // give error if user gives a non-existent entry
-		return data[i][j];
+		return data[i*cols+j];
 	}
-		
+	
+	std::span<double> row(int i) {
+		return i;
+	}
+
+
+
+
+	/*
+	grabbing data w the old implementation
 	std::vector<double>& operator[](int i) {
 		return data[i];
 	}
@@ -84,6 +92,7 @@ public:
 	const std::vector<double>& operator[](int i) const {
 		return data[i];
 	}
+	*/
 
 	int nRows() const {
 		return rows;
